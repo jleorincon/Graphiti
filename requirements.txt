@@ -1,0 +1,6 @@
+graphiti-core
+python-dotenv
+neo4j
+openai
+anthropic
+google-generativeai 
