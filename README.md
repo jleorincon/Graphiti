@@ -1,275 +1,278 @@
-# Graphiti Knowledge Graph Project
+# Graphiti Call Q&A Application
 
-A Python project using Graphiti to build and query knowledge graphs with Neo4j as the backend database.
+A powerful knowledge graph application using **Graphiti** for processing call transcripts and enabling intelligent Q&A interactions. This project includes both command-line tools and a modern web interface for uploading call data and querying the knowledge graph.
 
-## 🚀 Features
+## 🎯 What This Project Does
 
-- **Knowledge Graph Storage**: Store and manage information as interconnected nodes and relationships
-- **AI-Powered Search**: Query your knowledge graph using natural language
-- **Neo4j Integration**: Robust graph database backend
-- **Multiple AI Providers**: Support for OpenAI, Anthropic, and Google AI APIs
+- **Process Call Transcripts**: Upload and analyze call transcripts to build a knowledge graph
+- **Intelligent Q&A**: Ask questions about call content using natural language
+- **Knowledge Graph**: Automatically extract entities, relationships, and insights from conversations
+- **Web Interface**: Modern FastAPI-based web UI for easy interaction
+- **Multiple AI Providers**: Support for OpenAI, Anthropic, and Google AI
 
 ## 📋 Prerequisites
 
-- Python 3.8+
-- Docker (for Neo4j database)
-- API key from at least one AI provider (OpenAI, Anthropic, or Google)
+Before you begin, ensure you have the following installed:
 
-## 🛠️ Installation
+### Required Software
+1. **Python 3.8+** - [Download here](https://python.org/downloads/)
+2. **Docker** - [Download here](https://docker.com/get-started/)
+3. **Git** - [Download here](https://git-scm.com/downloads)
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/yourusername/graphiti.git
-   cd graphiti
-   ```
+### Required API Keys (at least one)
+- **OpenAI API Key** - [Get here](https://platform.openai.com/api-keys)
+- **Anthropic API Key** - [Get here](https://console.anthropic.com/)
+- **Google AI API Key** - [Get here](https://makersuite.google.com/app/apikey)
 
-2. **Create a virtual environment:**
-   ```bash
-   python -m venv graphiti-env
-   source graphiti-env/bin/activate  # On Windows: graphiti-env\Scripts\activate
-   ```
+## 🚀 Step-by-Step Setup
 
-3. **Install dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Set up environment variables:**
-   Create a `.env` file in the root directory:
-   ```env
-   # Neo4j Configuration
-   NEO4J_URI=bolt://localhost:7687
-   NEO4J_USER=neo4j
-   NEO4J_PASSWORD=password123
-   
-   # AI API Keys (set at least one)
-   OPENAI_API_KEY=your_openai_key_here
-   ANTHROPIC_API_KEY=your_anthropic_key_here
-   GOOGLE_API_KEY=your_google_key_here
-   ```
-
-5. **Start Neo4j database:**
-   ```bash
-   docker run -d --name neo4j \
-     -p 7474:7474 -p 7687:7687 \
-     -e NEO4J_AUTH=neo4j/password123 \
-     neo4j:latest
-   ```
-
-## 🏃 Usage
-
-### Quick Start
-
-Run the example script:
+### Step 1: Clone and Navigate to Project
 ```bash
+git clone <your-repo-url>
+cd Graphiti
+```
+
+### Step 2: Set Up Python Virtual Environment
+```bash
+# Create virtual environment
+python -m venv graphiti-env
+
+# Activate virtual environment
+# On macOS/Linux:
+source graphiti-env/bin/activate
+# On Windows:
+# graphiti-env\Scripts\activate
+```
+
+### Step 3: Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### Step 4: Set Up Neo4j Database
+```bash
+# Start Neo4j using Docker
+docker run -d \
+  --name neo4j \
+  -p 7474:7474 \
+  -p 7687:7687 \
+  -e NEO4J_AUTH=neo4j/password123 \
+  neo4j:latest
+
+# Wait for Neo4j to start (about 30 seconds)
+echo "Waiting for Neo4j to start..."
+sleep 30
+```
+
+### Step 5: Configure Environment Variables
+```bash
+# Copy the example environment file
+cp env.example .env
+
+# Edit the .env file with your API keys
+nano .env  # or use your preferred editor
+```
+
+**Important**: Update your `.env` file with your actual API keys:
+```env
+# Neo4j Configuration (default values work with Docker setup above)
+NEO4J_URI=bolt://localhost:7687
+NEO4J_USER=neo4j
+NEO4J_PASSWORD=password123
+
+# AI API Keys (set at least one)
+OPENAI_API_KEY=your_actual_openai_key_here
+ANTHROPIC_API_KEY=your_actual_anthropic_key_here
+GOOGLE_API_KEY=your_actual_google_key_here
+```
+
+### Step 6: Verify Setup
+```bash
+# Test the configuration
+python -c "from config import print_config; print_config()"
+```
+
+You should see output showing your configuration status with ✅ for properly set API keys.
+
+## 🎮 How to Use the Application
+
+### Option 1: Quick Start with Example Script
+```bash
+# Make the run script executable
+chmod +x run_example.sh
+
+# Run the example (requires OPENAI_API_KEY)
+export OPENAI_API_KEY='your-key-here'
 ./run_example.sh
 ```
 
-Or run directly with Python:
+### Option 2: Run Basic Example
 ```bash
-export OPENAI_API_KEY='your-key-here'
 python graphiti_example.py
 ```
 
-### Call Q&A Applications
-
-#### 🖥️ Terminal Application
-Run the interactive command-line application:
+### Option 3: Use Call Q&A Application (Command Line)
 ```bash
 python call_qa_app.py
 ```
 
-#### 🌐 Enhanced Terminal Application (Phase 6)
-Run the enhanced version with advanced features:
+### Option 4: Launch Web Interface
 ```bash
-python call_qa_app_enhanced.py
-```
-
-New features in enhanced version:
-- **Robust Input Validation**: Better error handling and user guidance
-- **Batch File Upload**: Upload multiple files at once using patterns
-- **Continuous Questioning**: Ask multiple questions without returning to menu
-- **Search Filters**: Filter results by source, time, and other criteria
-- **Improved Output**: Better formatted results with emojis and statistics
-- **Comprehensive Logging**: Detailed application logs and error tracking
-
-#### 🌍 Web Interface
-Run the modern web-based interface:
-```bash
-# Install web dependencies first
-pip install fastapi uvicorn jinja2 python-multipart
-
-# Start the web server
 python web_interface.py
 ```
-
-Then open your browser to: **http://localhost:8000**
-
-Web interface features:
-- **Modern UI**: Beautiful, responsive web interface
-- **Drag & Drop**: Easy file uploads with multiple file support
-- **Real-time Search**: Instant knowledge graph queries
-- **Mobile Friendly**: Works on desktop, tablet, and mobile devices
-- **API Endpoints**: RESTful API for integration with other systems
-
-#### Example Usage:
-1. Upload call data (use provided sample files: `call1.txt`, `call2.txt`, `call3.txt`)
-2. Ask questions like:
-   - "What was John Doe's order number?"
-   - "Which customers had product issues?"
-   - "What sales inquiries came in this week?"
-
-### Running Tests
-
-```bash
-python test_graphiti.py
-# or
-python graphiti_simple_test.py
-```
+Then open your browser to: `http://localhost:8000`
 
 ## 📁 Project Structure
 
 ```
-graphiti/
-├── call_qa_app.py          # 🎯 Basic Q&A application (Terminal)
-├── call_qa_app_enhanced.py # 🚀 Enhanced Q&A app (Phase 6 features)
-├── web_interface.py        # 🌐 Modern web interface (FastAPI)
-├── monitoring.py           # 📊 Comprehensive monitoring & analytics
-├── config.py              # Configuration management
-├── graphiti_example.py     # Basic example script
-├── graphiti_simple_test.py # Simple test script
-├── test_graphiti.py        # Test suite
-├── run_example.sh          # Quick start script
-├── requirements.txt        # Python dependencies (updated for Phase 6)
-├── call1.txt              # Sample call data (John Doe)
-├── call2.txt              # Sample call data (Sarah Miller)
-├── call3.txt              # Sample call data (Michael Chen)
-├── env.example            # Environment variables template
-├── graphiti_app.log       # Application logs (auto-generated)
-├── errors.log             # Error logs (auto-generated)
-├── metrics.db             # Performance metrics database (auto-generated)
-└── README.md              # This file
+Graphiti/
+├── README.md                    # This file
+├── requirements.txt             # Python dependencies
+├── config.py                   # Configuration management
+├── env.example                 # Environment variables template
+├── .env                        # Your actual environment variables (create this)
+│
+├── graphiti_example.py         # Basic usage example
+├── call_qa_app.py             # Main Q&A application
+├── call_qa_app_enhanced.py    # Enhanced version with more features
+├── web_interface.py           # FastAPI web interface
+├── monitoring.py              # Performance monitoring tools
+│
+├── run_example.sh             # Quick start script
+├── test_*.py                  # Test files
+└── call*.txt                  # Sample call transcript files
 ```
 
-## 🔧 Configuration
+## 🔧 Configuration Options
 
-The project uses environment variables for configuration. See `config.py` for available options:
+### Neo4j Database
+- **URI**: `bolt://localhost:7687` (default)
+- **Username**: `neo4j` (default)
+- **Password**: `password123` (default for Docker setup)
 
-- `NEO4J_URI`: Neo4j database connection URI
-- `NEO4J_USER`: Neo4j username
-- `NEO4J_PASSWORD`: Neo4j password
-- `OPENAI_API_KEY`: OpenAI API key
-- `ANTHROPIC_API_KEY`: Anthropic API key
-- `GOOGLE_API_KEY`: Google AI API key
+### AI Providers
+You can use any combination of:
+- **OpenAI GPT models** (recommended for best results)
+- **Anthropic Claude models**
+- **Google Gemini models**
 
-## 🚀 Deployment & Monitoring
+## 📖 Usage Examples
 
-### Local Development
+### 1. Processing Call Transcripts
+```python
+import asyncio
+from call_qa_app import upload_call_file, ask_question
 
-1. Follow the installation steps above
-2. Start Neo4j using Docker
-3. Set your API keys in environment variables
-4. Choose your preferred interface:
-   - **Terminal**: `python call_qa_app.py` or `python call_qa_app_enhanced.py`
-   - **Web**: `python web_interface.py` → http://localhost:8000
+async def main():
+    # Upload a call transcript
+    await upload_call_file("call1.txt")
+    
+    # Ask questions about the call
+    answer = await ask_question("What was discussed in the call?")
+    print(answer)
 
-### 📊 Monitoring & Analytics
+asyncio.run(main())
+```
 
-The enhanced applications include comprehensive monitoring:
+### 2. Using the Web Interface
+1. Start the web server: `python web_interface.py`
+2. Open `http://localhost:8000` in your browser
+3. Upload call transcript files (`.txt` format)
+4. Ask questions in natural language
+5. View extracted knowledge graph insights
 
+### 3. Advanced Q&A Features
+```python
+# Ask specific questions
+await ask_question("Who were the participants?")
+await ask_question("What decisions were made?")
+await ask_question("What are the action items?")
+await ask_question("What topics were discussed?")
+```
+
+## 🛠 Troubleshooting
+
+### Common Issues
+
+**1. ModuleNotFoundError: No module named 'fastapi'**
 ```bash
-# View application logs
-tail -f graphiti_app.log
-
-# Check error logs
-tail -f errors.log
-
-# Performance metrics are stored in metrics.db
-# Access through the monitoring module
+# Make sure you activated your virtual environment
+source graphiti-env/bin/activate
+pip install -r requirements.txt
 ```
 
-**Built-in Analytics:**
-- Performance metrics tracking
-- Usage statistics and insights
-- System health monitoring
-- Automatic recommendations
-- Error tracking and alerting
+**2. Neo4j Connection Issues**
+```bash
+# Check if Neo4j is running
+docker ps | grep neo4j
 
-### Production Deployment
+# If not running, start it
+docker start neo4j
 
-For production deployment, consider:
-
-1. **Database**: Use a managed Neo4j instance (Neo4j Aura, AWS Neptune, etc.)
-2. **Environment Variables**: Use secure secret management
-3. **Web Server**: Deploy FastAPI with proper ASGI server (Gunicorn + Uvicorn)
-4. **Monitoring**: Set up log aggregation and metrics collection
-5. **Security**: Enable HTTPS, rate limiting, and authentication
-
-### Docker Deployment
-
-Create a `Dockerfile`:
-```dockerfile
-FROM python:3.11-slim
-
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-
-COPY . .
-
-# Expose web interface port
-EXPOSE 8000
-
-# Run web interface by default
-CMD ["python", "web_interface.py"]
+# Or recreate it
+docker rm neo4j
+docker run -d --name neo4j -p 7474:7474 -p 7687:7687 -e NEO4J_AUTH=neo4j/password123 neo4j:latest
 ```
 
-### Docker Compose Example
+**3. API Key Issues**
+- Verify your API keys are correct in the `.env` file
+- Check that you have sufficient credits/quota with your AI provider
+- Test with: `python -c "from config import print_config; print_config()"`
 
-```yaml
-version: '3.8'
-services:
-  neo4j:
-    image: neo4j:latest
-    environment:
-      NEO4J_AUTH: neo4j/password123
-    ports:
-      - "7474:7474"
-      - "7687:7687"
-  
-  graphiti-app:
-    build: .
-    environment:
-      NEO4J_URI: bolt://neo4j:7687
-      NEO4J_USER: neo4j
-      NEO4J_PASSWORD: password123
-      OPENAI_API_KEY: ${OPENAI_API_KEY}
-    ports:
-      - "8000:8000"
-    depends_on:
-      - neo4j
+**4. Permission Issues with Scripts**
+```bash
+chmod +x run_example.sh
 ```
 
-## 🤝 Contributing
+### Environment Verification
+Run this command to check your setup:
+```bash
+python -c "
+import sys
+print(f'Python version: {sys.version}')
+try:
+    import graphiti_core
+    print('✅ graphiti_core installed')
+except ImportError:
+    print('❌ graphiti_core not installed')
+try:
+    import fastapi
+    print('✅ fastapi installed')
+except ImportError:
+    print('❌ fastapi not installed - run pip install -r requirements.txt')
+"
+```
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+## 🔒 Security Considerations
 
-## 📝 License
+- **Never commit your `.env` file** to version control
+- **Rotate API keys regularly**
+- **Use environment-specific configurations** for development vs production
+- **Limit API key permissions** to only what's needed
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+## 📚 Additional Resources
 
-## 🆘 Support
-
-- Check the [Graphiti documentation](https://github.com/griptape-ai/graphiti-core)
-- Open an issue for bugs or feature requests
-- Review the example scripts for usage patterns
-
-## 🔗 Links
-
-- [Graphiti Core](https://github.com/griptape-ai/graphiti-core)
+- [Graphiti Core Documentation](https://github.com/getzep/graphiti)
 - [Neo4j Documentation](https://neo4j.com/docs/)
-- [OpenAI API](https://platform.openai.com/docs/) 
+- [FastAPI Documentation](https://fastapi.tiangolo.com/)
+- [OpenAI API Documentation](https://platform.openai.com/docs/)
+
+## 🤝 Support
+
+If you encounter issues:
+1. Check the troubleshooting section above
+2. Verify your environment setup
+3. Check the logs for error messages
+4. Ensure all dependencies are properly installed
+
+## 📝 Development Notes
+
+- The project uses **async/await** patterns for better performance
+- **Graphiti** handles the knowledge graph operations
+- **FastAPI** provides the modern web interface
+- **Neo4j** serves as the graph database backend
+- Multiple **AI providers** are supported for flexibility
+
+---
+
+**Happy coding! 🎉** 

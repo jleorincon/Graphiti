@@ -21,7 +21,7 @@ def print_config():
     print(f"  Neo4j User: {NEO4J_USER}")
     print(f"  OpenAI API Key: {'✅ Set' if OPENAI_API_KEY else '❌ Not set'}")
     print(f"  Anthropic API Key: {'✅ Set' if ANTHROPIC_API_KEY else '❌ Not set'}")
-    print(f"  Google API Key: {'✅ Set' if GOOGLE_API_KEY else '❌ Not set'}")
+    print(f"  Google API Key: {'✅ Set' if GOOGLE_API_KEY else '❌ Not set'}") 
     print("")
     print("💡 Tip: Create a .env file in the root directory with your API keys")
     print("   Example: OPENAI_API_KEY=your_key_here") 

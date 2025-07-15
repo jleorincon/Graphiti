@@ -87,8 +87,15 @@ class ResultFormatter:
         for i, res in enumerate(results, 1):
             output.append(f"\n📊 Result {i}:")
             output.append(f"  💡 Fact: {res.fact}")
-            output.append(f"  📁 Source: {res.source_description}")
-            output.append(f"  📅 Created: {res.created_at.strftime('%Y-%m-%d %H:%M:%S')}")
+            
+            # Handle different result types that may not have source_description
+            if hasattr(res, 'source_description'):
+                output.append(f"  📁 Source: {res.source_description}")
+            else:
+                output.append(f"  📁 Source: Knowledge graph")
+            
+            if hasattr(res, 'created_at'):
+                output.append(f"  📅 Created: {res.created_at.strftime('%Y-%m-%d %H:%M:%S')}")
             
             if hasattr(res, 'relevance_score'):
                 score_emoji = "🎯" if res.relevance_score > 0.8 else "🎪" if res.relevance_score > 0.6 else "🎨"
@@ -229,16 +236,13 @@ async def upload_call_data(graphiti_client: Graphiti):
     print("3. Batch upload multiple files")
     print("4. Return to main menu")
 
-    is_valid, validation_msg = InputValidator.validate_choice(
-        input("Enter your choice (1-4): ").strip(),
-        ['1', '2', '3', '4']
-    )
+    choice = input("Enter your choice (1-4): ").strip()
+    
+    is_valid, validation_msg = InputValidator.validate_choice(choice, ['1', '2', '3', '4'])
     
     if not is_valid:
         print(f"❌ {validation_msg}")
         return
-    
-    choice = validation_msg.split()[-1]  # Extract valid choice
     
     if choice == '4':
         return
@@ -322,7 +326,7 @@ async def search_with_filters(graphiti_client: Graphiti, query: str, source_filt
         
         # Apply post-search filtering if needed
         if source_filter:
-            results = [r for r in results if source_filter.lower() in r.source_description.lower()]
+            results = [r for r in results if hasattr(r, 'source_description') and source_filter.lower() in r.source_description.lower()]
         
         if days_back:
             cutoff_date = datetime.now(timezone.utc) - timedelta(days=days_back)
@@ -335,55 +339,51 @@ async def search_with_filters(graphiti_client: Graphiti, query: str, source_filt
         raise e
 
 async def ask_question_enhanced(graphiti_client: Graphiti):
-    """Enhanced question interface with continuous questioning and filters."""
+    """Enhanced question interface - asks one question then returns to main menu."""
     print("\n" + "═" * 50)
     print("🤖 ASK QUESTIONS ABOUT YOUR CALL DATA")
     print("═" * 50)
     
-    while True:
-        print("\n💬 Enter your question (or 'menu' to return, 'filters' for search options):")
-        query = input("❓ ").strip()
+    print("\n💬 Enter your question (or 'back' to return to main menu):")
+    query = input("❓ ").strip()
+    
+    if query.lower() in ['exit', 'menu', 'back', '']:
+        print("📋 Returning to main menu...")
+        return
+    elif query.lower() == 'filters':
+        await show_filter_options()
+        return
+    
+    is_valid, validation_msg = InputValidator.validate_query(query)
+    if not is_valid:
+        print(f"❌ {validation_msg}")
+        return
+    
+    # Check for filter commands
+    source_filter = None
+    days_back = None
+    num_results = 5
+    
+    # Simple filter parsing (could be enhanced)
+    if "source:" in query.lower():
+        parts = query.split("source:")
+        if len(parts) > 1:
+            source_filter = parts[1].split()[0]
+            query = parts[0].strip()
+    
+    try:
+        print(f"🔍 Searching for: '{query}'...")
+        results = await search_with_filters(
+            graphiti_client, query, source_filter, days_back, num_results
+        )
         
-        if query.lower() in ['exit', 'menu', 'back']:
-            break
-        elif query.lower() == 'filters':
-            await show_filter_options()
-            continue
+        print(ResultFormatter.format_search_results(results, query))
         
-        is_valid, validation_msg = InputValidator.validate_query(query)
-        if not is_valid:
-            print(f"❌ {validation_msg}")
-            continue
-        
-        # Check for filter commands
-        source_filter = None
-        days_back = None
-        num_results = 5
-        
-        # Simple filter parsing (could be enhanced)
-        if "source:" in query.lower():
-            parts = query.split("source:")
-            if len(parts) > 1:
-                source_filter = parts[1].split()[0]
-                query = parts[0].strip()
-        
-        try:
-            print(f"🔍 Searching for: '{query}'...")
-            results = await search_with_filters(
-                graphiti_client, query, source_filter, days_back, num_results
-            )
-            
-            print(ResultFormatter.format_search_results(results, query))
-            
-        except Exception as e:
-            logger.error(f"Search failed: {e}")
-            print(f"❌ Search failed: {e}")
-        
-        # Ask if user wants to continue
-        print("\n" + "─" * 30)
-        continue_choice = input("🔄 Ask another question? (y/n): ").strip().lower()
-        if continue_choice not in ['y', 'yes', '']:
-            break
+    except Exception as e:
+        logger.error(f"Search failed: {e}")
+        print(f"❌ Search failed: {e}")
+    
+    print("\n📋 Question completed. Returning to main menu...")
 
 async def show_filter_options():
     """Display available filter options."""
