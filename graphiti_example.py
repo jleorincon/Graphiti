@@ -1,5 +1,6 @@
 import asyncio
 import os
+from datetime import datetime
 from graphiti_core import Graphiti
 
 async def main():
@@ -18,14 +19,16 @@ async def main():
         
         await graphiti.add_episode(
             name="user_conversation",
-            content="John mentioned he loves playing tennis and works at Google",
-            source_description="User chat"
+            episode_body="John mentioned he loves playing tennis and works at Google",
+            source_description="User chat",
+            reference_time=datetime.now()
         )
         
         await graphiti.add_episode(
             name="user_update", 
-            content="John got promoted to Senior Engineer at Google",
-            source_description="User update"
+            episode_body="John got promoted to Senior Engineer at Google",
+            source_description="User update",
+            reference_time=datetime.now()
         )
         
         print("✅ Episodes added successfully!")

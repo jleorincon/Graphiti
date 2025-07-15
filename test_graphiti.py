@@ -7,7 +7,7 @@ async def main():
     graphiti = Graphiti(
         uri="bolt://localhost:7687",
         user="neo4j", 
-        password="AmericAn007"  # This matches what we set in Docker
+        password="password123"  # This matches what we set in Docker
     )
     
     try:
