@@ -3,4 +3,8 @@ python-dotenv
 neo4j
 openai
 anthropic
-google-generativeai 
+google-generativeai
+fastapi
+uvicorn[standard]
+jinja2
+python-multipart 
