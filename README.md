@@ -71,6 +71,25 @@ export OPENAI_API_KEY='your-key-here'
 python graphiti_example.py
 ```
 
+### Call Q&A Application (Main Feature)
+
+Run the interactive terminal application for call data analysis:
+```bash
+python call_qa_app.py
+```
+
+This application allows you to:
+- **Upload call data** from text files or direct input
+- **Ask questions** about the uploaded call data using natural language
+- **Get AI-powered answers** extracted from your knowledge graph
+
+#### Example Usage:
+1. Upload call data (use provided sample files: `call1.txt`, `call2.txt`, `call3.txt`)
+2. Ask questions like:
+   - "What was John Doe's order number?"
+   - "Which customers had product issues?"
+   - "What sales inquiries came in this week?"
+
 ### Running Tests
 
 ```bash
@@ -83,12 +102,17 @@ python graphiti_simple_test.py
 
 ```
 graphiti/
+├── call_qa_app.py          # 🎯 Main Q&A application (Terminal-based)
 ├── config.py              # Configuration management
-├── graphiti_example.py     # Main example script
+├── graphiti_example.py     # Basic example script
 ├── graphiti_simple_test.py # Simple test script
 ├── test_graphiti.py        # Test suite
 ├── run_example.sh          # Quick start script
 ├── requirements.txt        # Python dependencies
+├── call1.txt              # Sample call data (John Doe)
+├── call2.txt              # Sample call data (Sarah Miller)
+├── call3.txt              # Sample call data (Michael Chen)
+├── env.example            # Environment variables template
 └── README.md              # This file
 ```
 
